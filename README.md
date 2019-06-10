@@ -4,8 +4,8 @@
 ## 前提条件
 ### 安装TaoDB
 项目地址:[TaoDB](https://github.com/markusleevip/taodb)
-在output目标已经提供Windows X64平台的可运行版本。
-默认端口为8000
+在output目标已经提供Windows X64平台的可运行版本。TaoDB的默认端口：7398
+TaoStorage的默认端口：8000 ，TaoAlbum连接TaoStorage的端口即8000，如：你的服务器IP是192.168.1.100 ，TaoAlbum连接的完整地址为http://192.168.1.100:8000
 
 -----------
 	go get github.com/markusleevip/taodb
