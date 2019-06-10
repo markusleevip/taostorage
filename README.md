@@ -5,6 +5,8 @@
 ### 安装TaoDB
 项目地址:[TaoDB](https://github.com/markusleevip/taodb)
 在output目标已经提供Windows X64平台的可运行版本。
+默认端口为8000
+
 -----------
 	go get github.com/markusleevip/taodb
 	cd taodb
@@ -13,13 +15,26 @@
 
 
 ##  编译运行本项目 
+
 -----------
     go get github.com/markusleevip/taostorage
     cd taostorage/main
     go build
     ./main 
     #如果是windows系统 请执行main.exe
+		
     
+		
+## 运行截图 
+1.运行TaoDB
+<image src="./output/images/taodbd.png" /> 
+2.运行TaoStorage
+<image src="./output/images/taostorage.png" /> 
+
+## Main方法
+<image src="./output/images/main.png" /> 
+
+
 
 
 
