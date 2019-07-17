@@ -1,7 +1,6 @@
 package album
 
 import (
-	"fmt"
 	mux "github.com/julienschmidt/httprouter"
 	"github.com/markusleevip/taostorage/config"
 	"github.com/markusleevip/taostorage/db"
@@ -17,7 +16,6 @@ import (
 func List(w http.ResponseWriter, r *http.Request, _ mux.Params) {
 	db := db.GetDb()
 	dataMap, _ := db.Iterator("album")
-	fmt.Println(dataMap)
 	ret := kit.GetCommonRet()
 	if dataMap != nil{
 		list ,_:= mapsToList(dataMap)
