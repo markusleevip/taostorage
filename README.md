@@ -1,5 +1,5 @@
 # TaoStorage
-### This project was developed by Go language, is [TaoAlbum](https://github.com/markusleevip/TaoAlbum-android)'s back-end implementation, the implementation of mobile album storage to private server .
+### This project is develop by Go language, It is [TaoAlbum](https://github.com/markusleevip/TaoAlbum-android)'s back-end . Storage cellphone album server.
 ### 本项目是由Go语言开发，是[TaoAlbum](https://github.com/markusleevip/TaoAlbum-android)的后端实现，实现手机相册存储到私有服务器的功能。
 
 ## Preconditions 前提条件
