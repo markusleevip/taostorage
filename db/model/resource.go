@@ -5,6 +5,8 @@ import (
 	"github.com/markusleevip/taostorage/db"
 )
 
+var prefix ="album:"
+
 type Resource struct {
 	FileSize   int64
 	FileName   string
@@ -20,5 +22,16 @@ func (r *Resource) Save() error{
 	if err != nil {
 		return err
 	}
-	return db.Set(r.NameSha256, obj)
+	return db.Set(prefix+r.NameSha256, obj)
+}
+
+func  (r *Resource) Get() {
+	db := db.GetDb()
+
+	data,err := db.Get(prefix+r.NameSha256)
+	if err !=nil{
+		return
+	}
+	json.Unmarshal(data,r)
+
 }

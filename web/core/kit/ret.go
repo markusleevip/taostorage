@@ -1,14 +1,13 @@
 package kit
 
 const (
-	RetStateOk   string = "ok"
-	RetStateFail string = "fail"
+	RetStateOk   int8 = 1
+	RetStateFail int8 = -1
 )
 
 type Ret struct {
-	State string
+	State int8
 	Msg   string
-	Param map[string]string
 	Data  interface{}
 }
 
@@ -17,6 +16,5 @@ type Ret struct {
 func GetCommonRet() Ret {
 	ret := Ret{}
 	ret.State = RetStateFail
-	ret.Param = map[string]string{"Title": "Taostorage"}
 	return ret
 }

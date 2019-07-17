@@ -6,7 +6,8 @@ import (
 	"github.com/markusleevip/taostorage/db/model"
 	"github.com/markusleevip/taostorage/utils"
 	"github.com/markusleevip/taostorage/web/common"
-	"io"
+	"github.com/markusleevip/taostorage/web/core/kit"
+	"github.com/markusleevip/taostorage/web/core/render"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -47,6 +48,14 @@ func (Controller) Upload(w http.ResponseWriter, r *http.Request, ps httprouter.P
 	sha256Value := utils.GetByteSha256(data)
 	log.Println(sha256Value)
 
+	// 获取DB中是否已经保存该文件
+	temp := model.Resource{}
+	temp.NameSha256=sha256Value
+	temp.Get()
+	if temp.FileName !=""{
+		log.Printf(" 文件已经存在，文件名=%s\n",temp.FileName)
+	}
+
 	fileName := fHead.Filename
 
 	tempFileName := strconv.FormatInt(time.Now().UTC().UnixNano(), 10)
@@ -81,8 +90,14 @@ func (Controller) Upload(w http.ResponseWriter, r *http.Request, ps httprouter.P
 	nowTimeStr := nt.Format(baseFormat)
 	log.Println(nowTimeStr)
 
-	w.WriteHeader(http.StatusCreated)
-	io.WriteString(w, "Uploaded success.")
+	w.WriteHeader(http.StatusOK)
+	ret := kit.GetCommonRet()
+	ret.State = kit.RetStateOk
+	bean := Bean{}
+	bean.FileName=fileName
+	bean.State = 1
+	ret.Data = bean
+	render.RenderJson(w, ret)
 
 }
 

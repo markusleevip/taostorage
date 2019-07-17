@@ -1,6 +1,7 @@
 package action
 
 import (
+	"encoding/json"
 	"fmt"
 	mux "github.com/julienschmidt/httprouter"
 	"github.com/markusleevip/taostorage/db"
@@ -22,3 +23,16 @@ func TestTaodb(w http.ResponseWriter, r *http.Request, _ mux.Params) {
 	}
 	fmt.Fprintf(w, "<h1>Hello, TestTaodb</h1>")
 }
+
+
+
+func TestAlbumList(w http.ResponseWriter, r *http.Request, _ mux.Params) {
+	log.Info("TestTaodb.")
+	db := db.GetDb()
+
+	list, _ := db.Iterator("album")
+	fmt.Println(list)
+	jsonData ,_:=json.Marshal(list)
+	fmt.Fprintf(w, "%v",string(jsonData))
+}
+

@@ -1,6 +1,7 @@
 package db
 
 import (
+	"encoding/json"
 	"github.com/markusleevip/taodb/client"
 	"github.com/markusleevip/taodb/resp"
 	"net"
@@ -117,10 +118,42 @@ func (db *TaoDb) Del(key string) error {
 	return nil
 
 }
+
 func (db *TaoDb) State(string) (string, error) {
 	return "", nil
 }
 func (db *TaoDb) Iterator(prefix string) (map[string]string, error) {
+
+	if db == nil || db.pool == nil {
+		return nil, ErrPoolIsNil()
+	}
+	cn, err := db.pool.Get()
+	if err != nil {
+		return nil, err
+	}
+	defer db.pool.Put(cn)
+	cn.WriteCmdString("ITERATOR", prefix)
+
+	if err := cn.Flush(); err != nil {
+		cn.MarkFailed()
+		return nil, err
+	}
+
+	t, err := cn.PeekType()
+	if err != nil {
+		return nil, err
+	}
+	switch t {
+	case resp.TypeBulk:
+		data, _ := cn.ReadBulk(nil)
+		var mapResult map[string]string
+		json.Unmarshal(data,&mapResult)
+		return mapResult, nil
+	case resp.TypeError:
+		_, err = cn.ReadError()
+		return nil, err
+	}
+
 	return nil, nil
 
 }

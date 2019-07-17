@@ -3,6 +3,7 @@ package taoweb
 import (
 	mux "github.com/julienschmidt/httprouter"
 	"github.com/markusleevip/taostorage/web/action"
+	"github.com/markusleevip/taostorage/web/album"
 	"github.com/markusleevip/taostorage/web/upload"
 )
 
@@ -30,6 +31,16 @@ var routes = Routes{
 		Method: "GET",
 		Path:   "/test",
 		Handle: action.TestTaodb,
+	},
+	Route{
+		Method: "GET",
+		Path:   "/albums",
+		Handle: album.List,
+	},
+	Route{
+		Method: "GET",
+		Path:   "/show/:fileName",
+		Handle: album.Show,
 	},
 	Route{
 		Method: "POST",
