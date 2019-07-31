@@ -75,6 +75,7 @@ func (Controller) Upload(w http.ResponseWriter, r *http.Request, ps httprouter.P
 		common.SendErrorResponse(w, http.StatusInternalServerError, "Internal Server Error.")
 		return
 	}
+
 	res := model.Resource{}
 	res.FileName = tempFileName+"."+extName
 	res.FileSize = fileInfo.Size()

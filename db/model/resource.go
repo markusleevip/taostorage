@@ -16,6 +16,21 @@ type Resource struct {
 	CTime      string
 }
 
+type ResourceSort []Resource
+
+func (r ResourceSort) Len() int {
+	return len(r)
+}
+
+func (r ResourceSort) Less(i, j int) bool{
+	return r[i].FileName < r[j].FileName
+}
+
+func (r ResourceSort)  Swap(i, j int){
+	r[i],r[j] = r[j],r[i]
+}
+
+
 func (r *Resource) Save() error{
 	db := db.GetDb()
 	obj, err := json.Marshal(r)

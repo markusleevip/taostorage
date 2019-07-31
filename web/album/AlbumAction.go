@@ -1,6 +1,7 @@
 package album
 
 import (
+	"fmt"
 	mux "github.com/julienschmidt/httprouter"
 	"github.com/markusleevip/taostorage/config"
 	"github.com/markusleevip/taostorage/db"
@@ -14,11 +15,13 @@ import (
 )
 
 func List(w http.ResponseWriter, r *http.Request, _ mux.Params) {
+	fmt.Println("/albums")
 	db := db.GetDb()
 	dataMap, _ := db.Iterator("album")
 	ret := kit.GetCommonRet()
 	if dataMap != nil{
 		list ,_:= mapsToList(dataMap)
+		fmt.Println(list)
 		ret.Data = list
 		ret.State =  kit.RetStateOk
 	}
@@ -27,6 +30,7 @@ func List(w http.ResponseWriter, r *http.Request, _ mux.Params) {
 
 func Show(w http.ResponseWriter, r *http.Request, ps mux.Params) {
 	fileName := ps.ByName("fileName")
+	fmt.Println("fileName:"+fileName)
 	if fileName !=""{
 		albumPath := config.PFile.AlbumPath+"/"
 		data, err := os.Open(albumPath+fileName)
@@ -37,6 +41,7 @@ func Show(w http.ResponseWriter, r *http.Request, ps mux.Params) {
 		}
 		if data!=nil{
 			w.Header().Set("Content-Type", "image/jpeg")
+			fmt.Println("fileName:"+fileName)
 			http.ServeContent(w, r, "", time.Now().UTC(), data)
 		}
 	}
