@@ -34,7 +34,7 @@ var routes = Routes{
 	},
 	Route{
 		Method: "GET",
-		Path:   "/albums",
+		Path:   "/albums/:prePath",
 		Handle: album.List,
 	},
 	Route{

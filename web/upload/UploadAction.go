@@ -1,6 +1,7 @@
 package upload
 
 import (
+	"fmt"
 	"github.com/julienschmidt/httprouter"
 	"github.com/markusleevip/taostorage/config"
 	"github.com/markusleevip/taostorage/db/model"
@@ -58,47 +59,65 @@ func (Controller) Upload(w http.ResponseWriter, r *http.Request, ps httprouter.P
 
 	fileName := fHead.Filename
 
-	tempFileName := strconv.FormatInt(time.Now().UTC().UnixNano(), 10)
-
-	storeFile := albumPath + tempFileName+"."+extName
-	log.Println("storeFile:",storeFile)
-	err = ioutil.WriteFile(storeFile, data, 0644)
+	tempFile:= strconv.FormatInt(time.Now().UTC().UnixNano(), 10)
+	tempFileName := tempFile+"."+extName
+	tempStoreFile := albumPath + tempFile+"."+extName
+	log.Println("storeFile:",tempStoreFile)
+	err = ioutil.WriteFile(tempStoreFile, data, 0644)
 
 	if err != nil {
 		log.Printf("Write file error: %v", err)
 		common.SendErrorResponse(w, http.StatusInternalServerError, "Internal Server Error.")
 		return
 	}
-	fileInfo, err := os.Stat(storeFile)
+	fileInfo, err := os.Stat(tempStoreFile)
 	if err != nil {
 		log.Printf(" get fileInfo error: %v", err)
 		common.SendErrorResponse(w, http.StatusInternalServerError, "Internal Server Error.")
 		return
 	}
-
 	res := model.Resource{}
+	cTime,err := utils.Photo{}.GetDate(tempStoreFile)
 	res.FileName = tempFileName+"."+extName
 	res.FileSize = fileInfo.Size()
 	res.NameSha256 = sha256Value
 	res.FileType = utils.GetFileType(extName)
+	if err == nil{
+		log.Println("ctime:",cTime.Unix())
+		res.CTime = strconv.FormatInt(cTime.Unix(),10)
+		res.FilePath= utils.GetDateYYYYMM(cTime)
+		netFileName := albumPath+res.FilePath+"/"+tempFileName
+		_, err := os.Stat(albumPath+res.FilePath)
+		if err!=nil{
+			fmt.Println("Read dir error:",err)
+			err = os.MkdirAll(albumPath+res.FilePath,0664)
+			if err!=nil{
+				fmt.Println("MkdirAll error:",err)
+			}else {
+				fmt.Println("MkdirAll success:",albumPath+res.FilePath)
+			}
+		}
+		err = os.Rename(tempStoreFile,netFileName)
+		if err!=nil{
+			fmt.Println("rename error:",err)
+		}
+
+	}
+	fmt.Println("save res.")
 	// save to taodb
-	res.Save()
-	fileSize := fileInfo.Size()
-
-	log.Println("fileName:" + fileName)
-	log.Println(fileSize)
-	nt := time.Now()
-	nowTimeStr := nt.Format(baseFormat)
-	log.Println(nowTimeStr)
-
 	w.WriteHeader(http.StatusOK)
 	ret := kit.GetCommonRet()
 	ret.State = kit.RetStateOk
+	fmt.Println("===fileName:",fileName)
 	bean := Bean{}
 	bean.FileName=fileName
 	bean.State = 1
 	ret.Data = bean
 	render.RenderJson(w, ret)
+
+}
+
+func moveFile(filePath ,newPath string ){
 
 }
 

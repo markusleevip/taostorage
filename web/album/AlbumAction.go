@@ -14,10 +14,14 @@ import (
 	"time"
 )
 
-func List(w http.ResponseWriter, r *http.Request, _ mux.Params) {
+func List(w http.ResponseWriter, r *http.Request, ps mux.Params) {
 	fmt.Println("/albums")
+	prePath :=ps.ByName("prePath")
+	if "all" == prePath {
+		prePath = ""
+	}
 	db := db.GetDb()
-	dataMap, _ := db.Iterator("album")
+	dataMap, _ := db.Iterator("album:"+prePath)
 	ret := kit.GetCommonRet()
 	if dataMap != nil{
 		list ,_:= mapsToList(dataMap)

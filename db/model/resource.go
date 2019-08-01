@@ -2,10 +2,12 @@ package model
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/markusleevip/taostorage/db"
 )
 
-var prefix ="album:"
+var PrefixFileName ="album:%s:%s"
+var PrefixSha265   ="sha:%s"
 
 type Resource struct {
 	FileSize   int64
@@ -37,13 +39,13 @@ func (r *Resource) Save() error{
 	if err != nil {
 		return err
 	}
-	return db.Set(prefix+r.NameSha256, obj)
+	db.Set(fmt.Sprintf(PrefixSha265,r.NameSha256), obj)
+	return db.Set(fmt.Sprintf(PrefixFileName,r.FilePath,r.FileName), obj)
 }
 
 func  (r *Resource) Get() {
 	db := db.GetDb()
-
-	data,err := db.Get(prefix+r.NameSha256)
+	data,err := db.Get(fmt.Sprintf(PrefixSha265,r.NameSha256))
 	if err !=nil{
 		return
 	}
