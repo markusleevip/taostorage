@@ -78,7 +78,7 @@ func (Controller) Upload(w http.ResponseWriter, r *http.Request, ps httprouter.P
 	}
 	res := model.Resource{}
 	cTime,err := utils.Photo{}.GetDate(tempStoreFile)
-	res.FileName = tempFileName+"."+extName
+	res.FileName = tempFileName
 	res.FileSize = fileInfo.Size()
 	res.NameSha256 = sha256Value
 	res.FileType = utils.GetFileType(extName)
