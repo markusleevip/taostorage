@@ -61,6 +61,7 @@ func (Controller) Upload(w http.ResponseWriter, r *http.Request, ps httprouter.P
 
 	tempFile:= strconv.FormatInt(time.Now().UTC().UnixNano(), 10)
 	tempFileName := tempFile+"."+extName
+	previewFileName := tempFile+"_"+utils.PhotoPreviewSizeStr +"."+extName
 	tempStoreFile := albumPath + tempFile+"."+extName
 	log.Println("storeFile:",tempStoreFile)
 	err = ioutil.WriteFile(tempStoreFile, data, 0644)
@@ -101,10 +102,18 @@ func (Controller) Upload(w http.ResponseWriter, r *http.Request, ps httprouter.P
 		if err!=nil{
 			fmt.Println("rename error:",err)
 		}
+		// previewFileName
+		err = utils.Photo{}.CreatePreviewImg(netFileName,albumPath+res.FilePath+"/"+previewFileName)
+		if err!=nil{
+			fmt.Println("rename error:",err)
+		}else{
+			res.Preview = previewFileName
+		}
 
 	}
 	fmt.Println("save res.")
 	// save to taodb
+	res.Save()
 	w.WriteHeader(http.StatusOK)
 	ret := kit.GetCommonRet()
 	ret.State = kit.RetStateOk
@@ -117,7 +126,4 @@ func (Controller) Upload(w http.ResponseWriter, r *http.Request, ps httprouter.P
 
 }
 
-func moveFile(filePath ,newPath string ){
-
-}
 

@@ -14,6 +14,7 @@ type Resource struct {
 	FileName   string
 	FilePath   string
 	FileType   string
+	Preview	   string
 	NameSha256 string
 	CTime      string
 }

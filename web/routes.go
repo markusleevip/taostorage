@@ -39,7 +39,7 @@ var routes = Routes{
 	},
 	Route{
 		Method: "GET",
-		Path:   "/show/:fileName",
+		Path:   "/show/:filePath/:fileName",
 		Handle: album.Show,
 	},
 	Route{

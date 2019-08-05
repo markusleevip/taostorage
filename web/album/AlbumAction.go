@@ -34,9 +34,10 @@ func List(w http.ResponseWriter, r *http.Request, ps mux.Params) {
 
 func Show(w http.ResponseWriter, r *http.Request, ps mux.Params) {
 	fileName := ps.ByName("fileName")
+	filePath := ps.ByName("filePath")
 	fmt.Println("fileName:"+fileName)
 	if fileName !=""{
-		albumPath := config.PFile.AlbumPath+"/"
+		albumPath := config.PFile.AlbumPath+"/"+filePath+"/"
 		data, err := os.Open(albumPath+fileName)
 		if err !=nil{
 			log.Printf("Read file error : %v", err)
