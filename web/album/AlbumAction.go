@@ -15,6 +15,7 @@ import (
 )
 
 func List(w http.ResponseWriter, r *http.Request, ps mux.Params) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	fmt.Println("/albums")
 	prePath :=ps.ByName("prePath")
 	if "all" == prePath {
